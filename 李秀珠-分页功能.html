@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container{
+            width: 100vw;
+            height: 100vh;
+        }
+        .footPage{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 200px;
+        }
+        .sizeBox{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .size{
+            margin: 0 5px;
+            width: 50px;
+            height: 50px;
+            border: 1px solid black;
+            line-height: 50px;
+            text-align: center;
+        }
+        .activeSize{
+            margin: 0 5px;
+            width: 50px;
+            height: 50px;
+            border: 1px solid black;
+            line-height: 50px;
+            text-align: center;
+            background-color: greenyellow;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="footPage">
+            <span onclick="lastPage()" class="lastPage">上一页</span>
+            <div class="sizeBox">
+            </div>
+            <span onclick="nextPage()" class="nextPage">上一页</span>
+        </div>
+    </div> 
+</body>
+</html>
+<script>
+    let pageSize = 1;
+    let total = 15;
+    let currentPage = 1;
+    let startPage = 1;
+    let sizeBox = document.getElementsByClassName('sizeBox')[0];
+    sizeBox.addEventListener('click',clickFun);
+    vdom();
+    
+
+    function vdom(bool){ 
+        let spanNum = total >= 5 ? 4 : (total - 1);
+        let flag = sizeBox.children.length > 0 ? true : false;
+        const maxNum = startPage + spanNum > total ? total : ( startPage + spanNum)
+        for(let a = startPage; a <= maxNum; a++ ){
+            if(flag){
+                const sizeBoxChild = sizeBox.children;
+                sizeBoxChild[a - startPage].innerHTML = a;
+                sizeBoxChild[a - startPage].className = a === currentPage ? 'activeSize' : 'size';
+            }else{
+                let liIttem = document.createElement('div')
+                liIttem.className = a === currentPage ? 'activeSize' : 'size';
+                liIttem.innerHTML = a;
+                sizeBox.appendChild(liIttem);
+            }   
+        }
+    }
+
+
+    function lastPage(){
+        if(currentPage !== 1){
+            spanNum = currentPage -1;
+            currentPage = spanNum;
+            if(currentPage < (total - 2)){
+                startPage = currentPage > 3 ? (startPage - 1) : 1;
+            }
+            vdom();
+        }
+    }
+
+    function nextPage(){
+        if(currentPage < total){
+            spanNum = currentPage + 1;
+            currentPage = spanNum;
+            if(currentPage <= (total - 2)){
+                startPage = currentPage > 3 ? (startPage + 1) : 1;
+            }
+            
+            vdom();
+        }
+    }
+
+    function clickFun(event){
+        if(event.target.className === 'size'){
+            // 获取当前的页数
+            let clickPage = event.target.innerHTML;
+            currentPage = Number(clickPage);
+            if(clickPage <= 3){
+                startPage = 1;
+            }else if(clickPage >= total - 2){
+                startPage = total - 4;
+            }else{
+                startPage = currentPage - 2;
+            }
+            vdom();
+        }
+    }
+  
+</script>
